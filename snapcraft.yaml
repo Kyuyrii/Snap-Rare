@@ -1,0 +1,91 @@
+name: rare
+base: core24
+version: '1.12.0'
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+summary: Open source alternative for Epic Games Launcher, using Legendary
+description: |
+ Rare is a frontend for legendary-gl, an open source alternative for the Epic Games Launcher.
+
+  Why Rare?
+
+      Tries to be as lightweight as we can make it while still offering a feature-full experience
+      Supports all major platforms (Windows, Linux, Mac)
+      Gets out of your way when you don't need it, allowing you to enjoy your games
+
+  Rare supports all core features from the Epic Games Launcher, like installing and launching games, also many options to launch games with compatibility tools.
+grade: stable
+confinement: strict
+icon: Rare.svg
+
+apps:
+  rare:
+    command-chain: [desktop-launch-rare]
+    command: Rare-1.12.0.0/Rare.bin
+    desktop: rare.desktop
+    common-id: io.github.dummerle.rare
+    environment:
+      HOME: $SNAP_USER_COMMON
+      QT_QPA_PLATFORMTHEME: xdgdesktopportal
+      LD_LIBRARY_PATH: $SNAP/lxqt-support/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/opt/wine-stable/lib/wine/i386-unix:$SNAP/winehq/usr/lib/i386-linux-gnu:$SNAP/winehq/usr/lib/i386-linux-gnu/pulseaudio:$SNAP/opt/wine-stable/lib/wine/x86_64-unix:$SNAP/winehq/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+      QT_PLUGIN_PATH: $SNAP/lxqt-support/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/qt6/plugins:$QT_PLUGIN_PATH
+      PATH: $SNAP/opt/wine-stable/bin:$SNAP/winehq/usr/bin:$PATH
+    extensions: [kde-neon-6]
+    plugs:
+      - network-status
+      - screen-inhibit-control
+      - home
+      - removable-media
+      - mount-observe
+      - joystick
+      - bluez
+      - udisks2
+
+plugs:
+  shared-memory:
+    private: true
+  winehq:
+    content: winehq
+    interface: content
+    target: $SNAP/winehq
+    default-provider: wine-kyu
+
+layout:
+  /usr/lib/x86_64-linux-gnu/mangohud:
+    symlink: $SNAP/usr/lib/x86_64-linux-gnu/mangohud
+  /opt/wine-stable:
+    symlink: $SNAP/winehq/opt/wine-stable
+  /usr/bin/wine:
+    symlink: $SNAP/winehq/opt/wine-stable/bin/wine
+
+parts:
+  rare-app:
+    plugin: dump
+    source: https://github.com/RareDevs/Rare/releases/download/1.12.0/Rare-1.12.0.0-linux.zip
+  base-dependencies:
+    plugin: nil
+    stage-packages:
+      - libsdl2-2.0-0
+      - libdecor-0-0
+    prime:
+      - usr/lib/x86_64-linux-gnu/libSDL2-2.0.so*
+      - usr/lib/x86_64-linux-gnu/libdecor-0.so*
+
+  mangohud:
+    plugin: nil
+    stage-packages: [mangohud, libspdlog1.12, libfmt9]
+
+  command-chain:
+    after: [mangohud]
+    plugin: dump
+    source: ./other-files
+
+  desktop-file:
+    after: [command-chain]
+    plugin: nil
+    build-packages: [curl]
+    override-build: |
+      curl -o $CRAFT_PART_INSTALL/rare.desktop https://raw.githubusercontent.com/RareDevs/Rare/refs/heads/main/misc/rare.desktop
+      sed -i 's|Name=Rare|Name=Rare [Kyu]|' $CRAFT_PART_INSTALL/rare.desktop
