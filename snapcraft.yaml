@@ -22,14 +22,13 @@ icon: Rare.svg
 
 apps:
   rare:
-    command-chain: [desktop-launch-rare]
+    command-chain: [override-xdg-paths]
     command: Rare-1.12.0.0/Rare.bin
     desktop: rare.desktop
     common-id: io.github.dummerle.rare
     environment:
       HOME: $SNAP_USER_COMMON
-      LD_LIBRARY_PATH: $SNAP/opt/wine-stable/lib/wine/i386-unix:$SNAP/winehq/usr/lib/i386-linux-gnu:$SNAP/winehq/usr/lib/i386-linux-gnu/pulseaudio:$SNAP/opt/wine-stable/lib/wine/x86_64-unix:$SNAP/winehq/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-      PATH: $SNAP/opt/wine-stable/bin:$SNAP/winehq/usr/bin:$PATH
+      LD_PRELOAD: $SNAP/usr/lib/mangohud/lib64/libMangoHud_shim.so
     extensions: [kde-neon-6]
     plugs:
       - network-status
@@ -39,29 +38,38 @@ apps:
       - mount-observe
       - joystick
       - bluez
+      - system-observe
 
 plugs:
   shared-memory:
     private: true
-  winehq:
-    content: winehq
-    interface: content
-    target: $SNAP/winehq
-    default-provider: wine-kyu
 
 layout:
-  /usr/lib/x86_64-linux-gnu/mangohud:
-    symlink: $SNAP/usr/lib/x86_64-linux-gnu/mangohud
-  /opt/wine-stable:
-    symlink: $SNAP/winehq/opt/wine-stable
-  /usr/bin/wine:
-    symlink: $SNAP/winehq/opt/wine-stable/bin/wine
+  /usr/lib/mangohud:
+    symlink: $SNAP/usr/lib/mangohud
+
+lint:
+  ignore:
+    - library:
+        - usr/lib/mangohud/lib32/**
 
 parts:
   rare-app:
     plugin: dump
     source: https://github.com/RareDevs/Rare/releases/download/1.12.0/Rare-1.12.0.0-linux.zip
+
+  wine-kron4ek:
+    after: [rare-app]
+    plugin: dump
+    source: https://github.com/Kron4ek/Wine-Builds/releases/download/11.5/wine-11.5-amd64-wow64.tar.xz
+    organize:
+      bin: usr/bin
+      include: usr/include
+      lib: usr/lib
+      share: usr/share
+
   base-dependencies:
+    after: [wine-kron4ek]
     plugin: nil
     stage-packages:
       - libsdl2-2.0-0
@@ -70,12 +78,8 @@ parts:
       - usr/lib/x86_64-linux-gnu/libSDL2-2.0.so*
       - usr/lib/x86_64-linux-gnu/libdecor-0.so*
 
-  mangohud:
-    plugin: nil
-    stage-packages: [mangohud, libspdlog1.12, libfmt9]
-
   command-chain:
-    after: [mangohud]
+    after: [base-dependencies]
     plugin: dump
     source: ./other-files
 
@@ -86,3 +90,11 @@ parts:
     override-build: |
       curl -o $CRAFT_PART_INSTALL/rare.desktop https://raw.githubusercontent.com/RareDevs/Rare/refs/heads/main/misc/rare.desktop
       sed -i 's|Name=Rare|Name=Rare [Kyu]|' $CRAFT_PART_INSTALL/rare.desktop
+
+  mangohud:
+    after: [desktop-file]
+    plugin: dump
+    source: https://github.com/flightlessmango/MangoHud/releases/download/v0.8.2/MangoHud-0.8.2.r0.ga37b007.tar.gz
+    override-build: |
+      craftctl default
+      tar -xvf MangoHud-package.tar -C $CRAFT_PART_INSTALL
