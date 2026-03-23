@@ -39,6 +39,7 @@ apps:
       - joystick
       - bluez
       - system-observe
+      - hardware-observe
 
 plugs:
   shared-memory:
