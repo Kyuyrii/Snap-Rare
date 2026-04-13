@@ -99,3 +99,4 @@ parts:
     override-build: |
       craftctl default
       tar -xvf MangoHud-package.tar -C $CRAFT_PART_INSTALL
+    prime: [usr]
