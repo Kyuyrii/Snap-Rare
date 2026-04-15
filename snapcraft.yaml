@@ -40,6 +40,7 @@ apps:
       - bluez
       - system-observe
       - hardware-observe
+      - upower-observe
 
 plugs:
   shared-memory:
