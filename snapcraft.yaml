@@ -22,12 +22,14 @@ icon: Rare.svg
 
 apps:
   rare:
-    command-chain: [override-xdg-paths]
+    command-chain: [define-variables]
     command: Rare-1.12.0.0/Rare.bin
     desktop: rare.desktop
     common-id: io.github.dummerle.rare
     environment:
       HOME: $SNAP_USER_COMMON
+      PATH: $SNAP/opt/wine-stable/bin:$SNAP/winehq/usr/bin:$PATH
+      LD_LIBRARY_PATH: $SNAP/winehq/usr/lib/i386-linux-gnu:$SNAP/winehq/usr/lib/i386-linux-gnu/pulseaudio:$SNAP/winehq/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
       LD_PRELOAD: $SNAP/usr/lib/mangohud/lib64/libMangoHud_shim.so
     extensions: [kde-neon-6]
     plugs:
@@ -45,8 +47,21 @@ apps:
 plugs:
   shared-memory:
     private: true
+  winehq:
+    content: winehq
+    interface: content
+    target: $SNAP/winehq
+    default-provider: wine-kyu
 
 layout:
+  /opt/wine-stable:
+    symlink: $SNAP/winehq/opt/wine-stable
+  /usr/lib/i386-linux-gnu/alsa-lib:
+    symlink: $SNAP/winehq/usr/lib/i386-linux-gnu/alsa-lib
+  /usr/lib/x86_64-linux-gnu/alsa-lib:
+    symlink: $SNAP/winehq/usr/lib/x86_64-linux-gnu/alsa-lib
+  /usr/share/alsa:
+    bind: $SNAP/winehq/usr/share/alsa
   /usr/lib/mangohud:
     symlink: $SNAP/usr/lib/mangohud
 
@@ -60,18 +75,8 @@ parts:
     plugin: dump
     source: https://github.com/RareDevs/Rare/releases/download/1.12.0/Rare-1.12.0.0-linux.zip
 
-  wine-kron4ek:
-    after: [rare-app]
-    plugin: dump
-    source: https://github.com/Kron4ek/Wine-Builds/releases/download/11.5/wine-11.5-amd64-wow64.tar.xz
-    organize:
-      bin: usr/bin
-      include: usr/include
-      lib: usr/lib
-      share: usr/share
-
   base-dependencies:
-    after: [wine-kron4ek]
+    after: [rare-app]
     plugin: nil
     stage-packages:
       - libsdl2-2.0-0
