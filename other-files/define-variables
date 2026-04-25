@@ -18,6 +18,5 @@ else
 fi
 
 export GST_PLUGIN_SYSTEM_PATH="$SNAP/winehq/usr/lib/i386-linux-gnu/gstreamer-1.0:$SNAP/winehq/usr/lib/x86_64-linux-gnu/gstreamer-1.0:$GST_PLUGIN_SYSTEM_PATH"
-export GST_PLUGIN_PATH="$SNAP/winehq/usr/lib/i386-linux-gnu/gstreamer-1.0:$SNAP/winehq/usr/lib/x86_64-linux-gnu/gstreamer-1.0:$GST_PLUGIN_PATH"
 
 exec "$@"
