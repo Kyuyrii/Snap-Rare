@@ -1,0 +1,25 @@
+#!/bin/bash
+
+export XDG_CONFIG_HOME="$SNAP_USER_COMMON/.config"
+export XDG_DATA_HOME="$SNAP_USER_COMMON/.local/share"
+
+mkdir -p "$XDG_CONFIG_HOME"
+mkdir -p "$XDG_DATA_HOME"
+
+# Create a Desktop link in $SNAP_USER_COMMON that opens the user's actual desktop folder.
+DESKTOP_PATH=$(grep "XDG_DESKTOP_DIR" $SNAP_REAL_HOME/.config/user-dirs.dirs | cut -d'=' -f2 | sed 's/"//g' | sed "s#\$HOME#$SNAP_REAL_HOME#g")
+rm -rf $SNAP_USER_COMMON/Desktop
+ln -snf "$DESKTOP_PATH" "$SNAP_USER_COMMON/Desktop"
+
+if snapctl is-connected home; then
+    export UMU_FOLDERS_PATH="$SNAP_REAL_HOME/App/UMU"
+else
+    export UMU_FOLDERS_PATH="$SNAP_USER_COMMON/App/UMU"
+fi
+
+export PATH="$SNAP/winehq/usr/bin:$PATH"
+export LD_LIBRARY_PATH="$SNAP/winehq/usr/lib/i386-linux-gnu:$SNAP/winehq/usr/lib/i386-linux-gnu/pulseaudio:$SNAP/winehq/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"
+export GST_PLUGIN_SYSTEM_PATH="$SNAP/winehq/usr/lib/i386-linux-gnu/gstreamer-1.0:$SNAP/winehq/usr/lib/x86_64-linux-gnu/gstreamer-1.0:$GST_PLUGIN_SYSTEM_PATH"
+export XDG_DATA_DIRS="$SNAP/winehq/usr/share:$XDG_DATA_DIRS"
+
+exec "$@"

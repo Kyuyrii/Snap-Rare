@@ -1,0 +1,77 @@
+name: rare
+base: core24
+version: '1.12.0'
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+summary: Open source alternative for Epic Games Launcher, using Legendary
+description: |
+ Rare is a frontend for legendary-gl, an open source alternative for the Epic Games Launcher.
+
+  Why Rare?
+
+      Tries to be as lightweight as we can make it while still offering a feature-full experience
+      Supports all major platforms (Windows, Linux, Mac)
+      Gets out of your way when you don't need it, allowing you to enjoy your games
+
+  Rare supports all core features from the Epic Games Launcher, like installing and launching games, also many options to launch games with compatibility tools.
+grade: stable
+confinement: strict
+icon: Rare.svg
+
+apps:
+  rare:
+    command-chain: [snap/command-chain/define-variables]
+    command: Rare-1.12.0.0/Rare.bin
+    desktop: rare.desktop
+    common-id: io.github.dummerle.rare
+    environment:
+      HOME: $SNAP_USER_COMMON
+      LD_PRELOAD: $SNAP/winehq/usr/lib/mangohud/lib64/libMangoHud_shim.so
+    extensions: [kde-neon-6]
+    plugs:
+      - network-status
+      - screen-inhibit-control
+      - home
+      - removable-media
+      - mount-observe
+      - joystick
+      - bluez
+      - system-observe
+      - hardware-observe
+      - upower-observe
+
+plugs:
+  shared-memory:
+    private: true
+  winehq:
+    content: winehq
+    interface: content
+    target: $SNAP/winehq
+    default-provider: wine-kyu
+
+layout:
+  /usr/lib/i386-linux-gnu/alsa-lib:
+    symlink: $SNAP/winehq/usr/lib/i386-linux-gnu/alsa-lib
+  /usr/lib/x86_64-linux-gnu/alsa-lib:
+    symlink: $SNAP/winehq/usr/lib/x86_64-linux-gnu/alsa-lib
+  /usr/lib/mangohud:
+    symlink: $SNAP/winehq/usr/lib/mangohud
+
+parts:
+  rare-app:
+    plugin: dump
+    source: https://github.com/RareDevs/Rare/releases/download/1.12.0/Rare-1.12.0.0-linux.zip
+    build-packages: [curl]
+    override-build: |
+      craftctl default
+      curl -o $CRAFT_PART_INSTALL/rare.desktop https://raw.githubusercontent.com/RareDevs/Rare/refs/heads/main/misc/rare.desktop
+      sed -i 's|Name=Rare|Name=Rare [Kyu]|' $CRAFT_PART_INSTALL/rare.desktop
+
+  other-files:
+    after: [rare-app]
+    plugin: dump
+    source: ./other-files
+    organize:
+      define-variables: snap/command-chain/define-variables

@@ -1,0 +1,57 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <filter id="a" color-interpolation-filters="sRGB" height="1.2653" width="1.2653" x="-.13265" y="-.13265">
+        <feGaussianBlur stdDeviation="1.3264978"/>
+    </filter>
+    <filter id="b" color-interpolation-filters="sRGB" height="2.1734" width="2.0495" x="-.52473" y="-.5867">
+        <feGaussianBlur stdDeviation="1.3264978"/>
+    </filter>
+    <filter id="c" color-interpolation-filters="sRGB" height="2.1539" width="2.0341" x="-.51703" y="-.57695">
+        <feGaussianBlur stdDeviation="1.3264978"/>
+    </filter>
+    <g transform="matrix(9.8589 0 0 9.8589 19.386 19.963)">
+        <g fill="#37375e">
+            <path d="m17.225 17.929 13.894 12.451" filter="url(#c)" stroke="#2dacce" stroke-linecap="round"
+                  stroke-width="8"/>
+            <path d="m17.441 29.879 13.69-12.244" filter="url(#b)" stroke="#2dacce" stroke-linecap="round"
+                  stroke-width="8"/>
+            <circle cx="12" cy="24" filter="url(#a)" r="12"/>
+            <circle cx="36" cy="24" filter="url(#a)" r="12"/>
+        </g>
+        <path d="m17.225 17.929 13.894 12.451" fill="none" stroke="#2dacce" stroke-linecap="round" stroke-width="8"/>
+        <path d="m17.441 29.879 13.69-12.244" fill="none" stroke="#2dacce" stroke-linecap="round" stroke-width="8"/>
+        <circle cx="12" cy="24" fill="#2dacce" r="12"/>
+        <circle cx="36" cy="24" fill="#2dacce" r="12"/>
+        <g fill="none">
+            <g stroke-width="2">
+                <g stroke="#202639">
+                    <g stroke-linecap="round">
+                        <circle cx="12" cy="24" r="9" stroke-linejoin="bevel"/>
+                        <circle cx="36" cy="24" r="9" stroke-linejoin="bevel"/>
+                        <path d="m18.347 17.635 11.123 12.54"/>
+                        <path d="m29.619 17.658-11.25 12.656"/>
+                    </g>
+                    <path d="m21 24h6"/>
+                </g>
+                <path d="m16.818 29.081 7.0129-7.9203" stroke="#2dacce" stroke-linecap="round"/>
+                <path d="m24.091 26.883 7.1427-8.0088" stroke="#2dacce"/>
+                <g stroke="#202639" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 21v6"/>
+                    <path d="m12 30v-6"/>
+                    <path d="m15 27v-6"/>
+                    <path d="m12 18v6"/>
+                </g>
+            </g>
+            <path d="m5.8445 24h3.3097" stroke="#2dacce" stroke-linecap="square" stroke-width="1.8379"/>
+        </g>
+        <g fill="#202639">
+            <path d="m34 24-1 1.7321h-2l-1-1.7321 1-1.7321h2z"/>
+            <path d="m34 12-1 1.7321h-2l-1-1.7321 1-1.7321h2z" transform="translate(3.0001 15.732)"/>
+            <path d="m34 12-1 1.7321h-2l-1-1.7321 1-1.7321h2z" transform="translate(5.0001 15.732)"/>
+            <path d="m34 12-1 1.7321h-2l-1-1.7321 1-1.7321h2z" transform="matrix(1 0 0 .99997 3.0001 8.2684)"/>
+            <path d="m34 12-1 1.7321h-2l-1-1.7321 1-1.7321h2z" transform="matrix(1 0 0 .99997 5.0001 8.2684)"/>
+            <path d="m34 12-1 1.7321h-2l-1-1.7321 1-1.7321h2z" stroke="#2dacce"
+                  transform="matrix(1 0 0 .99997 7.0001 8.2684)"/>
+            <path d="m34 12-1 1.7321h-2l-1-1.7321 1-1.7321h2z" transform="translate(8 12)"/>
+        </g>
+    </g>
+</svg>
