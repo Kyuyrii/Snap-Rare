@@ -45,6 +45,10 @@ apps:
 plugs:
   shared-memory:
     private: true
+  dot-local-share-applications:
+    interface: personal-files
+    write:
+      - $HOME/.local/share/applications
   winehq:
     content: winehq
     interface: content
