@@ -1,6 +1,6 @@
 name: rare
 base: core24
-version: '1.12.0'
+version: '1.12.0.237'
 platforms:
   amd64:
     build-on: [amd64]
@@ -23,11 +23,12 @@ icon: Rare.svg
 apps:
   rare:
     command-chain: [define-variables]
-    command: Rare-1.12.0.0/Rare.bin
+    command: Rare-1.12.0.237-x86_64-linux/Rare.bin
     desktop: rare.desktop
     common-id: io.github.dummerle.rare
     environment:
       HOME: $SNAP_USER_COMMON
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages:$PYTHONPATH
     extensions: [kde-neon-6]
     plugs:
       - network-status
@@ -40,6 +41,14 @@ apps:
       - system-observe
       - hardware-observe
       - upower-observe
+  dot-local-share-applications:
+    command-chain: [define-variables]
+    command: usr/bin/leyline-weaver --kdialog --noconfirm
+    environment:
+      HOME: $SNAP_USER_COMMON
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages:$PYTHONPATH
+      LEYLINE_DEST: $SNAP_USER_COMMON/.local/share
+    extensions: [kde-neon-6]
 
 plugs:
   shared-memory:
@@ -61,14 +70,31 @@ layout:
 parts:
   rare-app:
     plugin: dump
-    source: https://github.com/RareDevs/Rare/releases/download/1.12.0/Rare-1.12.0.0-linux.zip
+    source: https://github.com/RareDevs/Rare/releases/download/1.12.0.237/Rare-1.12.0.237-x86_64-linux.zip
     build-packages: [curl]
     override-build: |
       craftctl default
-      curl -o $CRAFT_PART_INSTALL/rare.desktop https://raw.githubusercontent.com/RareDevs/Rare/refs/heads/main/misc/rare.desktop
+      curl -o $CRAFT_PART_INSTALL/rare.desktop https://raw.githubusercontent.com/RareDevs/Rare/07bfcea4c2d439271f744df110a6d3648a4647fc/packaging/rare.desktop
       sed -i 's|Name=Rare|Name=Rare [Kyu]|' $CRAFT_PART_INSTALL/rare.desktop
 
-  other-files:
+  leyline-weaver:
     after: [rare-app]
+    plugin: dump
+    source: https://github.com/Kyuyrii/Leyline-Weaver.git
+    stage-packages:
+      - python3-jeepney
+    organize:
+      leyline-weaver: usr/bin/leyline-weaver
+    prime:
+      - usr/bin/leyline-weaver
+      - usr/lib/python3/dist-packages
+  
+  kdialog:
+    after: [leyline-weaver]
+    plugin: nil
+    stage-snaps: [kdialog]
+
+  other-files:
+    after: [kdialog]
     plugin: dump
     source: ./other-files
