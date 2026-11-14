@@ -29,6 +29,9 @@ apps:
     environment:
       HOME: $SNAP_USER_COMMON
       PYTHONPATH: $SNAP/usr/lib/python3/dist-packages:$PYTHONPATH
+      BWRAP: $SNAP/bin/bwrap
+      PRESSURE_VESSEL_BWRAP: $SNAP/bin/bwrap
+      PROTONFIXES_DISABLE: "1"
     extensions: [kde-neon-6]
     plugs:
       - network-status
@@ -41,6 +44,7 @@ apps:
       - system-observe
       - hardware-observe
       - upower-observe
+      - umu-support
   dot-local-share-applications:
     command-chain: [define-variables]
     command: usr/bin/leyline-weaver --terminal --noconfirm
@@ -90,6 +94,18 @@ parts:
       - usr/bin/leyline-weaver
       - meta/LICENSE-Leyline-Weaver
       - usr/lib/python3/dist-packages
+
+  proot-next:
+    after: [leyline-weaver]
+    plugin: nil
+    build-packages: [curl]
+    override-build: |
+      craftctl default
+      mkdir -p "$CRAFT_PART_INSTALL/bin"
+      curl -fsSL -o "$CRAFT_PART_INSTALL/bin/proot" \
+        "https://github.com/selkies-project/proot-next/releases/download/0.3.9/proot-$(uname -m)"
+      chmod +x "$CRAFT_PART_INSTALL/bin/proot"
+      ln -sf proot "$CRAFT_PART_INSTALL/bin/bwrap"
 
   other-files:
     after: [leyline-weaver]
