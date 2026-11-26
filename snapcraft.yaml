@@ -23,7 +23,7 @@ icon: Rare.svg
 apps:
   rare:
     command-chain: [define-variables]
-    command: bin/rare
+    command: Rare-1.12.0.237-x86_64-linux/Rare.bin
     desktop: rare.desktop
     common-id: io.github.dummerle.rare
     environment:
@@ -78,23 +78,11 @@ lint:
 
 parts:
   rare-app:
-    plugin: python
-    source: https://github.com/RareDevs/Rare.git
-    source-tag: $SNAPCRAFT_PROJECT_VERSION
-    build-packages:
-      - git
-      - python3-pip
-      - pyside6-tools
-      - curl
+    plugin: dump
+    source: https://github.com/RareDevs/Rare/releases/download/1.12.0.237/Rare-1.12.0.237-x86_64-linux.zip
+    build-packages: [curl]
     override-build: |
-      export DEB_PYTHON_INSTALL_LAYOUT=deb_system
-      sed -i '/PySide6-Essentials/d' pyproject.toml
-      pip install --break-system-packages --prefix="$CRAFT_PART_INSTALL" .
-      bash tools/ui2py.sh --force
-      bash tools/qrc2py.sh --force
-      python3 tools/ts2qm.py
-      pip install --break-system-packages --no-deps --force-reinstall --prefix="$CRAFT_PART_INSTALL" .
-      sed -i '1s|^#!/usr/bin/python3.*|#!/usr/bin/env python3|' "$CRAFT_PART_INSTALL"/bin/*
+      craftctl default
       curl -o $CRAFT_PART_INSTALL/rare.desktop https://raw.githubusercontent.com/RareDevs/Rare/refs/heads/main/packaging/rare.desktop
 
   leyline-weaver:
